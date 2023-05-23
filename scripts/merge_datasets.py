@@ -31,9 +31,9 @@ def process(input_folder: Path, output_folder: Path)->None:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("""Merge existing DSEC dataset into the DSEC-DET dataset""")
-    parser.add_argument("--dsec", type=Path, default="/data/storage/daniel/aegnn/dsec_offic")
-    parser.add_argument("--dsec_det", type=Path, default="/data/storage/daniel/DSEC_with_detections")
-    parser.add_argument("--output_path", type=Path, default="/data/storage/daniel/DSEC_with_detections_merged")
+    parser.add_argument("--dsec", type=Path, required=True)
+    parser.add_argument("--dsec_det", type=Path, required=True)
+    parser.add_argument("--output_path", type=Path, required=True)
 
     args = parser.parse_args()
 

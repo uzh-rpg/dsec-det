@@ -31,9 +31,11 @@ def read_remap_and_write(input_file, output_directory, remapping):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("""Remaps images from image view to distorted event view""")
-    parser.add_argument("--dsec_merged", type=Path, default="/data/storage/daniel/DSEC_with_detections_merged")
+    parser.add_argument("--dsec_merged", type=Path, required=True)
 
     args = parser.parse_args()
+
+    assert args.dsec_merged.exists() and args.dsec_merged.is_dir()
 
     splits = ['test', 'train']
     for split in splits:
