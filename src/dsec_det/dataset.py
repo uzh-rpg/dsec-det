@@ -80,7 +80,8 @@ class DSECDet:
         if self.debug:
             # visualize tracks and events
             events = output['events']
-            output['debug'] = render_events_on_image(output['image'], x=events['x'], y=events['y'], p=events['p'])
+            image = (255 * (output['image'].astype("float32") / 255) ** (1/2.2)).astype("uint8")
+            output['debug'] = render_events_on_image(image, x=events['x'], y=events['y'], p=events['p'])
             output['debug'] = render_object_detections_on_image(output['debug'], output['tracks'])
 
         return output

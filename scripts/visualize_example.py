@@ -18,7 +18,7 @@ if __name__ == '__main__':
         index = np.random.randint(0, len(dataset))
         output = dataset[index]
         cv2.imshow("Visualization", output['debug'])
-        cv2.waitKey(1000)
+        cv2.waitKey(0)
 
 
 

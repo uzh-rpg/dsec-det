@@ -37,6 +37,10 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    assert args.dsec.exists() and args.dsec.is_dir()
+    assert args.dsec_det.exists() and args.dsec_det.is_dir()
+    assert args.output_path.parent.exists()
+
     input_folders = []
     output_folders = []
 
