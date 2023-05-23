@@ -3,7 +3,7 @@ import cv2
 from dsec_det.directory import DSECDirectory
 
 from dsec_det.preprocessing import compute_img_idx_to_track_idx
-from dsec_det.io import extract_from_h5
+from dsec_det.io import extract_from_h5_by_timewindow
 from dsec_det.visualize import render_object_detections_on_image, render_events_on_image
 
 
@@ -64,7 +64,7 @@ class DSECDet:
 
         # load events
         t_0, t_1 = directory.images.timestamps[[i_0, i_1]]
-        output['events'] = extract_from_h5(directory.events.event_file, t_0, t_1)
+        output['events'] = extract_from_h5_by_timewindow(directory.events.event_file, t_0, t_1)
 
         # load tracks
         tracks = directory.tracks.tracks
