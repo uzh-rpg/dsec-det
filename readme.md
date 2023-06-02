@@ -1,4 +1,4 @@
-# DSEC-det
+# DSEC-Detection
 
 <p align="center">
   <a href="https://youtu.be/uX6XknBGg0w">
@@ -6,7 +6,7 @@
   </a>
 </p>
 
-This page contains utility functions to use the DSEC-det datast. It is based off of the original DSEC dataset, but has
+This page contains utility functions to use the DSEC-Detection datast. It is based off of the original DSEC dataset, but has
 added object detections in the left camera view. When using this dataset please cite the following two papers:
 
 [Daniel Gehrig](https://danielgehrig18.github.io/), [Davide Scaramuzza](http://rpg.ifi.uzh.ch/people_scaramuzza.html), "Low-latency Inter-frame Object Detection with Event Cameras", arXiv, 2023
@@ -32,7 +32,7 @@ added object detections in the left camera view. When using this dataset please 
 }
 ```
 
-To set up the DSEC-det dataset, you need to
+To set up the DSEC-Detection dataset, you need to
 1. download the original dataset, let us denote the path to this dataset with $DSEC_ROOT
 2. download the extra datasets, let us denote the path to the extra data with $DSEC_EXTRA_ROOT
 3. install the package
