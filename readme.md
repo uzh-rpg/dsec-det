@@ -41,12 +41,13 @@ To set up the DSEC-Detection dataset, you need to
 5. test alignment
 
 ## Download DSEC
-Run the following commands to download the original DSEC dataset. The individual files can be found on the official DSEC
-[project webpage](https://dsec.ifi.uzh.ch/) to download the dataset to `$DATA/DSEC`.
+Run the following commands to download the original DSEC dataset to the `$DATA/DSEC` folder.
 
 ```bash
 bash scripts/download_dsec.sh $DATA/DSEC_original # $DATA/DSEC is the destination path
 ```
+The individual files can be found on the official DSEC
+[project webpage](https://dsec.ifi.uzh.ch/) 
 
 ## Download DSEC-extra
 Run the following command to download the extra data to `$DATA/DSEC_extra`
