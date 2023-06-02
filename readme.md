@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://youtu.be/uX6XknBGg0w">
-    <img src="./assets/dsec_det_thumbnail.png" alt="" width="600"/>
+    <img src="./assets/dsec_det.gif" alt="" width="600"/>
   </a>
 </p>
 
