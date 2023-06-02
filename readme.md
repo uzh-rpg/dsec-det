@@ -99,3 +99,42 @@ your deep learning applications. The output should look something like this:
     <img src="./assets/visualization_test.png" alt="" width="600"/>
   </a>
 </p>
+
+## Data Format
+The new sequences are summarized below and follow the same naming convention as DSEC
+```bash 
+.
+├── test
+│   └── thun_02_a
+└── train
+    ├── zurich_city_16
+    ├── zurich_city_17
+    ├── zurich_city_18
+    ├── zurich_city_19
+    ├── zurich_city_20
+    └── zurich_city_21
+```
+
+For all sequences, including the new ones, we provide object labels in the `object_detections` subfolder
+```bash
+sequence_name/
+├── object_detections
+│    └── left
+│        └── tracks.npy
+├─... 
+```
+
+Each `tracks.npy` file contains all the object detection, with associated track id for that sequence. It is stored as a numpy array, following the 
+[format by Prophesee](https://github.com/prophesee-ai/prophesee-automotive-dataset-toolbox). The keys are explained below: 
+
+```
+t:                (uint64)  timestamp of the detection in microseconds.
+x:                (float64) x-coordinate of the top-left corner of the bounding box
+y:                (float64) y-coordinate of the top-left corner of the bounding box
+h:                (float64) height of the bounding box
+w:                (float64) width of the bounding box
+class_id:         (uint8)   Class of the object in the bounding box. 
+                            The classes are ('pedestrian', 'rider', 'car', 'bus', 'truck', 'bicycle', 'motorcycle', 'train')
+class_confidence: (float64) Confidence of the detection. Can usually be ignored.
+track_id:         (uint64)  ID of the track. Bounding boxes with the same ID belong to one track. 
+```
