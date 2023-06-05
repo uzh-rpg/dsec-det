@@ -1,13 +1,13 @@
-# DSEC-det
+# DSEC-Detection
 
 <p align="center">
-  <a href="https://youtu.be/uX6XknBGg0w">
-    <img src="./assets/dsec_det_thumbnail.png" alt="" width="600"/>
+  <a href="https://youtu.be/-xoorhBcEDE">
+    <img src="./assets/dsec_det.gif" alt="" width="900"/>
   </a>
 </p>
 
-This page contains utility functions to use the DSEC-det datast. It is based off of the original DSEC dataset, but has
-added object detections in the left camera view. When using this dataset please cite the following two papers:
+This page contains utility functions to use the DSEC-Detection dataset. It is based off of the original DSEC dataset, but has
+added object detections in the left event camera view. When using this dataset please cite the following two papers:
 
 [Daniel Gehrig](https://danielgehrig18.github.io/), [Davide Scaramuzza](http://rpg.ifi.uzh.ch/people_scaramuzza.html), "Low-latency Inter-frame Object Detection with Event Cameras", arXiv, 2023
 
@@ -32,7 +32,7 @@ added object detections in the left camera view. When using this dataset please 
 }
 ```
 
-To set up the DSEC-det dataset, you need to
+To set up the DSEC-Detection dataset, you need to
 1. download the original dataset, let us denote the path to this dataset with $DSEC_ROOT
 2. download the extra datasets, let us denote the path to the extra data with $DSEC_EXTRA_ROOT
 3. install the package
@@ -41,12 +41,13 @@ To set up the DSEC-det dataset, you need to
 5. test alignment
 
 ## Download DSEC
-Run the following commands to download the original DSEC dataset. The individual files can be found on the official DSEC
-[project webpage](https://dsec.ifi.uzh.ch/) to download the dataset to `$DATA/DSEC`.
+Run the following commands to download the original DSEC dataset to the `$DATA/DSEC` folder.
 
 ```bash
 bash scripts/download_dsec.sh $DATA/DSEC_original # $DATA/DSEC is the destination path
 ```
+The individual files can be found on the official DSEC
+[project webpage](https://dsec.ifi.uzh.ch/) 
 
 ## Download DSEC-extra
 Run the following command to download the extra data to `$DATA/DSEC_extra`
@@ -98,3 +99,42 @@ your deep learning applications. The output should look something like this:
     <img src="./assets/visualization_test.png" alt="" width="600"/>
   </a>
 </p>
+
+## Data Format
+The new sequences are summarized below and follow the same naming convention as DSEC
+```bash 
+.
+├── test
+│   └── thun_02_a
+└── train
+    ├── zurich_city_16
+    ├── zurich_city_17
+    ├── zurich_city_18
+    ├── zurich_city_19
+    ├── zurich_city_20
+    └── zurich_city_21
+```
+
+For all sequences, including the new ones, we provide object labels in the `object_detections` subfolder
+```bash
+sequence_name/
+├── object_detections
+│    └── left
+│        └── tracks.npy
+├─... 
+```
+
+Each `tracks.npy` file contains all the object detection, with associated track id for that sequence. It is stored as a numpy array, following the 
+[format by Prophesee](https://github.com/prophesee-ai/prophesee-automotive-dataset-toolbox). The keys are explained below: 
+
+```
+t:                (uint64)  timestamp of the detection in microseconds.
+x:                (float64) x-coordinate of the top-left corner of the bounding box
+y:                (float64) y-coordinate of the top-left corner of the bounding box
+h:                (float64) height of the bounding box
+w:                (float64) width of the bounding box
+class_id:         (uint8)   Class of the object in the bounding box. 
+                            The classes are ('pedestrian', 'rider', 'car', 'bus', 'truck', 'bicycle', 'motorcycle', 'train')
+class_confidence: (float64) Confidence of the detection. Can usually be ignored.
+track_id:         (uint64)  ID of the track. Bounding boxes with the same ID belong to one track. 
+```
