@@ -1,13 +1,13 @@
 # DSEC-Detection
 
 <p align="center">
-  <a href="https://youtu.be/uX6XknBGg0w">
+  <a href="https://youtu.be/-xoorhBcEDE">
     <img src="./assets/dsec_det.gif" alt="" width="900"/>
   </a>
 </p>
 
-This page contains utility functions to use the DSEC-Detection datast. It is based off of the original DSEC dataset, but has
-added object detections in the left camera view. When using this dataset please cite the following two papers:
+This page contains utility functions to use the DSEC-Detection dataset. It is based off of the original DSEC dataset, but has
+added object detections in the left event camera view. When using this dataset please cite the following two papers:
 
 [Daniel Gehrig](https://danielgehrig18.github.io/), [Davide Scaramuzza](http://rpg.ifi.uzh.ch/people_scaramuzza.html), "Low-latency Inter-frame Object Detection with Event Cameras", arXiv, 2023
 
