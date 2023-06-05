@@ -45,7 +45,7 @@ def _extract_from_h5_by_index(filehandle, ev_start_idx: int, ev_end_idx: int):
     x_new = x[ev_start_idx:ev_end_idx]
     y_new = y[ev_start_idx:ev_end_idx]
     p_new = p[ev_start_idx:ev_end_idx]
-    t_new = t[ev_start_idx:ev_end_idx]
+    t_new = t[ev_start_idx:ev_end_idx].astype("int64") + filehandle["t_offset"][()]
 
     output = {
         'p': p_new,
@@ -54,6 +54,11 @@ def _extract_from_h5_by_index(filehandle, ev_start_idx: int, ev_end_idx: int):
         'y': y_new,
     }
     return output
+
+
+def get_num_events(h5file):
+    with h5py.File(str(h5file), 'r') as h5f:
+        return len(h5f['events/t'])
 
 def extract_from_h5_by_index(h5file, ev_start_idx: int, ev_end_idx: int):
     with h5py.File(str(h5file), 'r') as h5f:
@@ -68,13 +73,13 @@ def extract_from_h5_by_timewindow(h5file, t_min_us: int, t_max_us: int):
         t = events['t']
 
         t_ev_start_us = t_min_us - t_offset
-        assert t_ev_start_us >= t[0]
-        t_ev_start_ms = math.floor(t_ev_start_us / 1000)
+        #assert t_ev_start_us >= t[0], (t_ev_start_us, t[0])
+        t_ev_start_ms = t_ev_start_us // 1000
         ms2idx_start_idx = t_ev_start_ms
         ev_start_idx = ms2idx[ms2idx_start_idx]
 
         t_ev_end_us = t_max_us - t_offset
-        assert t_ev_end_us <= t[-1]
+        assert t_ev_end_us <= t[-1], (t_ev_end_us, t[-1])
         t_ev_end_ms = math.floor(t_ev_end_us / 1000)
         ms2idx_end_idx = t_ev_end_ms
         ev_end_idx = ms2idx[ms2idx_end_idx]

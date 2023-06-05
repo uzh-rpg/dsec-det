@@ -1,5 +1,6 @@
 from pathlib import Path 
 import cv2
+import numpy as np
 from dsec_det.directory import DSECDirectory
 
 from dsec_det.preprocessing import compute_img_idx_to_track_idx
@@ -9,27 +10,43 @@ from dsec_det.label import CLASSES
 
 
 class DSECDet:
-    def __init__(self, root: Path, split: str="train", sync: str="back", debug: bool=False,
-                 load_detections_in_both_views: bool=False, max_num_events=None):
+    def __init__(self, root: Path, split: str="train", sync: str="front", debug: bool=False, split_config=None):
         """
         root: Root to the the DSEC dataset (the one that contains 'train' and 'test'
         split: Can be one of ['train', 'test']
         window_size: Number of microseconds of data
         sync: Can be either 'front' (last event ts), or 'back' (first event ts). Whether the front of the window or
               the back of the window is synced with the images.
+
+        Each sample of this dataset loads one image, events, and labels at a timestamp. The behavior is different for 
+        sync='front' and sync='back', and these are visualized below.
+
+        Legend: 
+        . = events
+        | = image
+        L = label
+
+        sync='front'
+        -------> time
+        .......|
+               L
+
+        sync='back'
+        -------> time
+        |.......
+               L
+        
         """
         assert root.exists()
-        assert split in ['train', 'test']
+        assert split in ['train', 'test', 'val']
         assert (root / split).exists()
-
         assert sync in ['front', 'back']
 
-        self.max_num_events = max_num_events
         self.debug = debug
+        self.classes = CLASSES
 
-        self.root = root / split
+        self.root = root / ("train" if split in ['train', 'val'] else "test")
         self.sync = sync
-        self.load_detections_in_both_views = load_detections_in_both_views
 
         self.height = 480
         self.width = 640
@@ -37,100 +54,30 @@ class DSECDet:
         self.directories = dict()
         self.img_idx_track_idxs = dict()
 
-        self.subsequence_directories = sorted(list(self.root.glob("*/")))
+        if split_config is None:
+            self.subsequence_directories = list(self.root.glob("*/"))
+        else:
+            self.subsequence_directories = [self.root / s for s in split_config[split]]
+
+        self.subsequence_directories = sorted(self.subsequence_directories, key=self.first_time_from_subsequence)
+
         for f in self.subsequence_directories:
             directory = DSECDirectory(f)
             self.directories[f.name] = directory
             self.img_idx_track_idxs[f.name] = compute_img_idx_to_track_idx(directory.tracks.tracks['t'],
                                                                            directory.images.timestamps)
 
+    def first_time_from_subsequence(self, subsequence):
+        return np.genfromtxt(subsequence / "images/timestamps.txt", dtype="int64")[0]
+
     def __len__(self):
         return sum(len(v)-1 for v in self.img_idx_track_idxs.values())
 
-    def print_summary(self):
-        sequences = sorted(list(self.directories.keys()))
-        tot_num_class_occurences = {c: 0 for c in CLASSES}
-        tot_num_labelled_images = 0
-
-        for s in sequences:
-            directory = self.directories[s]
-            img_idx_track_idxs = self.img_idx_track_idxs[s]
-
-            tracks = directory.tracks.tracks
-            num_detections_per_image = img_idx_track_idxs[:,0] - img_idx_track_idxs[:,1]
-            num_labelled_images = (num_detections_per_image > 0).sum()
-            tot_num_labelled_images += num_labelled_images
-
-            for c in tot_num_class_occurences:
-                c_idx = CLASSES.index(c)
-                tot_num_class_occurences[c] += (tracks["class_id"] == c_idx).astype("int32").sum()
-
-        print("======== Split Summary ========")
-        print("Num Sequences: ", len(sequences))
-        print("Num Labelled Images: ", tot_num_labelled_images)
-        print("Num Bounding Boxes: ", sum(tot_num_class_occurences.values()))
-        print("Num Bounding Boxes by Class: ")
-        for c in CLASSES:
-            print(f"\t{c}: {tot_num_class_occurences[c]}")
-        print("===============================")
-
-
-
-    def zipped_dataset(self, seqs=None):
-        num_samples_per_sequence = {k: len(v) for k, v in self.img_idx_track_idxs.items()}
-        sequences = sorted(list(num_samples_per_sequence))
-
-        if seqs is not None:
-            sequences = [sequences[i] for i in seqs]
-            num_samples_per_sequence = {k: num_samples_per_sequence[k] for k in sequences}
-
-        max_num_samples = max(num_samples_per_sequence.values())
-        for i in range(max_num_samples):
-            output = {}
-            for seq, num_samples in num_samples_per_sequence.items():
-                if i < num_samples-1:
-                    data = self.getitem(i, self.img_idx_track_idxs[seq], self.directories[seq])
-                    output[seq] = data["debug"]
-            yield output
-
-    def getitem(self, item, img_idx_to_track_idx, directory):
+    def __getitem__(self, item):
         output = {}
-
-        # load image
-        image_files = directory.images.image_files_distorted
-        output['image'] = cv2.imread(str(image_files[item]))
-
-        # find out where to load events
-        if self.sync == "front":
-            assert 0 < item < len(img_idx_to_track_idx)
-            i_0 = item - 1
-            i_1 = item
-        else:
-            assert 0 <= item < len(img_idx_to_track_idx)-1
-            i_0 = item
-            i_1 = item + 1
-
-        # load events
-        t_0, t_1 = directory.images.timestamps[[i_0, i_1]]
-        output['events'] = extract_from_h5_by_timewindow(directory.events.event_file, t_0, t_1)
-
-        if self.max_num_events is not None:
-            e = output['events']
-            if self.sync == "front":
-                output['events'] = {k: e[k][-self.max_num_events:] for k in "xypt"}
-            else:
-                output['events'] = {k: e[k][:self.max_num_events] for k in "xypt"}
-
-        # load tracks
-        tracks = directory.tracks.tracks
-        if not self.load_detections_in_both_views:
-            idx0, idx1 = img_idx_to_track_idx[item]
-            output['tracks'] = tracks[idx0:idx1]
-        else:
-            idx0, idx1 = img_idx_to_track_idx[i_0]
-            output['tracks_0'] = tracks[idx0:idx1]
-            idx0, idx1 = img_idx_to_track_idx[i_1]
-            output['tracks_1'] = tracks[idx0:idx1]
+        output['image'] = self.get_image(item)
+        output['events'] = self.get_events(item)
+        output['tracks'] = self.get_tracks(item)
 
         if self.debug:
             # visualize tracks and events
@@ -141,11 +88,54 @@ class DSECDet:
 
         return output
 
-    def __getitem__(self, item):
+    def get_index_window(self, index, num_idx, sync="back"):
+        if sync == "front":
+            assert 0 < index < num_idx
+            i_0 = index - 1
+            i_1 = index
+        else:
+            assert 0 <= index < num_idx - 1
+            i_0 = index
+            i_1 = index + 1
+
+        return i_0, i_1
+
+    def get_tracks(self, index, mask=None, directory_name=None):
+        index, img_idx_to_track_idx, directory = self.rel_index(index, directory_name)
+        i_0, i_1 = self.get_index_window(index, len(img_idx_to_track_idx), sync=self.sync)
+        idx0, idx1 = img_idx_to_track_idx[i_1]
+        tracks = directory.tracks.tracks[idx0:idx1]
+
+        if mask is not None:
+            tracks = tracks[mask[idx0:idx1]]
+
+        return tracks
+
+    def get_events(self, index, directory_name=None):
+        index, img_idx_to_track_idx, directory = self.rel_index(index, directory_name)
+        i_0, i_1 = self.get_index_window(index, len(img_idx_to_track_idx), sync=self.sync)
+        t_0, t_1 = directory.images.timestamps[[i_0, i_1]]
+        events = extract_from_h5_by_timewindow(directory.events.event_file, t_0, t_1)
+        return events
+
+    def get_image(self, index, directory_name=None):
+        index, img_idx_to_track_idx, directory = self.rel_index(index, directory_name)
+        image_files = directory.images.image_files_distorted
+        image = cv2.imread(str(image_files[index]))
+        return image
+
+    def rel_index(self, index, directory_name=None):
+        if directory_name is not None:
+            img_idx_to_track_idx = self.img_idx_track_idxs[directory_name]
+            directory = self.directories[directory_name]
+            return index, img_idx_to_track_idx, directory
+
         for f in self.subsequence_directories:
             img_idx_to_track_idx = self.img_idx_track_idxs[f.name]
-            if len(img_idx_to_track_idx)-1 <= item:
-                item -= (len(img_idx_to_track_idx)-1)
+            if len(img_idx_to_track_idx)-1 <= index:
+                index -= (len(img_idx_to_track_idx)-1)
                 continue
             else:
-                return self.getitem(item, img_idx_to_track_idx, self.directories[f.name])
+                return index, img_idx_to_track_idx, self.directories[f.name]
+        else:
+            raise ValueError

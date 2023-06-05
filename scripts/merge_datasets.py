@@ -54,10 +54,11 @@ if __name__ == '__main__':
         input_folders_dsec, output_folders_dsec = compile_paths(args.dsec / split, args.output_path / split)
         input_folders_dsec_det, output_folders_dsec_det = compile_paths(args.dsec_det / split, args.output_path / split)
 
-        input_folders.extend(input_folders_dsec)
-        input_folders.extend(input_folders_dsec_det)
+        if not args.inplace:
+            input_folders.extend(input_folders_dsec)
+            output_folders.extend(output_folders_dsec)
 
-        output_folders.extend(output_folders_dsec)
+        input_folders.extend(input_folders_dsec_det)
         output_folders.extend(output_folders_dsec_det)
 
     with TaskManager(total=len(input_folders), processes=4, queue_size=4, use_pbar=True) as tm:
