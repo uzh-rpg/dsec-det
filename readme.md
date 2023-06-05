@@ -118,7 +118,6 @@ dataset = DSECDet(root=Path("path/to/dsec_root"),
                   sync="back",               # load 50 ms of event after ('back'), or before  ('front') the image
                   split_config=split_config, # which sequences go into train/val/test. See yaml file for details.
                   debug=True)                # generate debug output, available in output['debug']
-dataset = DSECDet(root=Path("path/to/dsec_root"), split="test", sync="back", split_config=split_config, debug=True)
         
 index = 1234
 output = dataset[index]
