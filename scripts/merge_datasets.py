@@ -33,13 +33,17 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser("""Merge existing DSEC dataset into the DSEC-DET dataset""")
     parser.add_argument("--dsec", type=Path, required=True)
     parser.add_argument("--dsec_det", type=Path, required=True)
-    parser.add_argument("--output_path", type=Path, required=True)
+    parser.add_argument("--output_path", type=Path)
+    parser.add_argument("--inplace", action="store_true")
 
     args = parser.parse_args()
 
+    if args.inplace:
+        args.output_path = args.dsec
+
     assert args.dsec.exists() and args.dsec.is_dir()
     assert args.dsec_det.exists() and args.dsec_det.is_dir()
-    assert args.output_path.parent.exists()
+    assert args.output_path is not None and args.output_path.parent.exists()
 
     input_folders = []
     output_folders = []
