@@ -9,15 +9,15 @@
 This page contains utility functions to use the DSEC-Detection datast. It is based off of the original DSEC dataset, but has
 added object detections in the left camera view. When using this dataset please cite the following two papers:
 
-[Daniel Gehrig](https://danielgehrig18.github.io/), [Davide Scaramuzza](http://rpg.ifi.uzh.ch/people_scaramuzza.html), "Low-latency Inter-frame Object Detection with Event Cameras", arXiv, 2023
+[Daniel Gehrig](https://danielgehrig18.github.io/), [Davide Scaramuzza](http://rpg.ifi.uzh.ch/people_scaramuzza.html), "Pushing the Limits of Asynchronous Graph-based Object Detection with Event Cameras", arXiv, 2022
 
 ```bibtex
-@InProceedings{Gehrig2023arxiv,
+@InProceedings{Gehrig2022arxiv,
   author = {Daniel Gehrig and Davide Scaramuzza},
-  title = {Low-latency Inter-frame Object Detection with Event Cameras},
+  title = {Pushing the Limits of Asynchronous Graph-based Object Detection with Event Cameras},
   booktitle = {arXiv},
   month = {June},
-  year = {2023}
+  year = {2022}
 }
 ```
  and the original DSEC, on which this extension is based.
