@@ -17,11 +17,10 @@ if __name__ == '__main__':
 
     dataset = DSECDet(args.dsec_merged, split=args.split, sync="back", debug=True)
 
-    while True:
-        index = np.random.randint(0, len(dataset))
-        output = dataset[index]
-        cv2.imshow("Visualization", output['debug'])
-        cv2.waitKey(0)
+    index = 5574
+    output = dataset[index]
+    cv2.imshow("Visualization", output['debug'])
+    cv2.waitKey(0)
 
 
 
