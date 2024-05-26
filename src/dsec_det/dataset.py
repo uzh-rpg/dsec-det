@@ -57,8 +57,9 @@ class DSECDet:
         if split_config is None:
             self.subsequence_directories = list(self.root.glob("*/"))
         else:
-            self.subsequence_directories = [self.root / s for s in split_config[split]]
-
+            available_dirs = list(self.root.glob("*/"))
+            self.subsequence_directories = [self.root / s for s in split_config[split] if self.root / s in available_dirs]
+        
         self.subsequence_directories = sorted(self.subsequence_directories, key=self.first_time_from_subsequence)
 
         for f in self.subsequence_directories:
