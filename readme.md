@@ -9,17 +9,18 @@
 This page contains utility functions to use the DSEC-Detection datast. It is based off of the original DSEC dataset, but has
 added object detections in the left camera view. When using this dataset please cite the following two papers:
 
-[Daniel Gehrig](https://danielgehrig18.github.io/), [Davide Scaramuzza](http://rpg.ifi.uzh.ch/people_scaramuzza.html), "Pushing the Limits of Asynchronous Graph-based Object Detection with Event Cameras", arXiv, 2022
+[Daniel Gehrig](https://danielgehrig18.github.io/), [Davide Scaramuzza](http://rpg.ifi.uzh.ch/people_scaramuzza.html),
+"Low Latency Automotive Vision with Event Cameras", Nature, 2024 [Open Access PDF](https://www.nature.com/articles/s41586-024-07409-w).
 
 ```bibtex
-@InProceedings{Gehrig2022arxiv,
-  author = {Daniel Gehrig and Davide Scaramuzza},
-  title = {Pushing the Limits of Asynchronous Graph-based Object Detection with Event Cameras},
-  booktitle = {arXiv},
-  month = {June},
-  year = {2022}
+@inproceedings{Gehrig24nature,
+  author    = {Gehrig, Daniel and Scaramuzza, Davide},
+  title     = {Low Latency Automotive Vision with Event Cameras},
+  booktitle = {Nature},
+  year      = {2024}
 }
 ```
+
  and the original DSEC, on which this extension is based.
 [Mathias Gehrig](https://magehrig.github.io/), Willem Aarents, [Daniel Gehrig](https://danielgehrig18.github.io/) and [Davide Scaramuzza](http://rpg.ifi.uzh.ch/people_scaramuzza.html), "DSEC: A Stereo Event Camera Dataset for Driving Scenarios", RA-L, 2021
 ```bibtex
