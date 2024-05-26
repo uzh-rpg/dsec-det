@@ -1,7 +1,7 @@
 # DSEC-Detection
 
 <p align="center">
-  <a href="https://youtu.be/uX6XknBGg0w">
+  <a href="https://youtu.be/dwzGhMQCc4Y">
     <img src="./assets/dsec_det.gif" alt="" width="900"/>
   </a>
 </p>
