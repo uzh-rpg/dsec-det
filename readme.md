@@ -1,9 +1,9 @@
 # DSEC-Detection
 
 <p align="center">
-  <a href="https://youtu.be/dwzGhMQCc4Y">
-    <img src="./assets/dsec_det.gif" alt="" width="900"/>
-  </a>
+<a href="https://youtu.be/dwzGhMQCc4Y">
+  <img src="assets/thumbnail_yt.png" alt="DAGR" width="500"/>
+</a>
 </p>
 
 This page contains utility functions to use the DSEC-Detection datast. It is based off of the original DSEC dataset, but has
@@ -13,7 +13,7 @@ added object detections in the left camera view. When using this dataset please 
 "Low Latency Automotive Vision with Event Cameras", Nature, 2024 [Open Access PDF](https://www.nature.com/articles/s41586-024-07409-w).
 
 ```bibtex
-@inproceedings{Gehrig24nature,
+@Article{Gehrig24nature,
   author    = {Gehrig, Daniel and Scaramuzza, Davide},
   title     = {Low Latency Automotive Vision with Event Cameras},
   booktitle = {Nature},
