@@ -95,16 +95,16 @@ class DSECDet:
             i_0 = index - 1
             i_1 = index
         else:
-            assert 0 <= index < num_idx - 1
+            #assert 0 <= index < num_idx - 1
             i_0 = index
-            i_1 = index + 1
+            i_1 = np.clip(index + 1, 0, num_idx - 1)
 
         return i_0, i_1
 
     def get_tracks(self, index, mask=None, directory_name=None):
         index, img_idx_to_track_idx, directory = self.rel_index(index, directory_name)
         i_0, i_1 = self.get_index_window(index, len(img_idx_to_track_idx), sync=self.sync)
-        idx0, idx1 = img_idx_to_track_idx[i_1]
+        idx0, idx1 = img_idx_to_track_idx[i_0]
         tracks = directory.tracks.tracks[idx0:idx1]
 
         if mask is not None:
