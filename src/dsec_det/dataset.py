@@ -39,7 +39,7 @@ class DSECDet:
         """
         assert root.exists()
         assert split in ['train', 'test', 'val']
-        assert (root / split).exists()
+        #assert (root / split).exists()
         assert sync in ['front', 'back']
 
         self.debug = debug

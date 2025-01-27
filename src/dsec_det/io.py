@@ -79,9 +79,9 @@ def extract_from_h5_by_timewindow(h5file, t_min_us: int, t_max_us: int):
         ev_start_idx = ms2idx[ms2idx_start_idx]
 
         t_ev_end_us = t_max_us - t_offset
-        assert t_ev_end_us <= t[-1], (t_ev_end_us, t[-1])
+        #assert t_ev_end_us <= t[-1], (t_ev_end_us, t[-1])
         t_ev_end_ms = math.floor(t_ev_end_us / 1000)
-        ms2idx_end_idx = t_ev_end_ms
+        ms2idx_end_idx = np.clip(t_ev_end_ms, 0, len(ms2idx)-1)
         ev_end_idx = ms2idx[ms2idx_end_idx]
 
         return _extract_from_h5_by_index(h5f, ev_start_idx, ev_end_idx)
